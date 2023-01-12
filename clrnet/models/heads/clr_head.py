@@ -248,8 +248,9 @@ class CLRHead(nn.Module):
                   tran_tensor(predictions[..., 2])) * self.img_h /
                  torch.tan(tran_tensor(predictions[..., 4]) * math.pi + 1e-5))) / (self.img_w - 1)
 
-            prediction_lines = predictions.clone()
+            # prediction_lines = predictions.clone()
             predictions[..., 6:] += reg[..., 4:]
+            prediction_lines = predictions.clone()
 
             predictions_lists.append(predictions)
 
