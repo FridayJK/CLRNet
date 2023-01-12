@@ -26,7 +26,11 @@ def line_iou(pred, target, img_w, length=15, aligned=True):
                torch.max(px1[:, None, :], tx1[None, ...]))
         union = (torch.max(px2[:, None, :], tx2[None, ...]) -
                  torch.min(px1[:, None, :], tx1[None, ...]))
-
+# add line_iou_weight, by zjk
+    if(aligned == True):
+        line_iou_weight = (torch.linspace(0,1,steps=72)+0.5).repeat(pred.shape[0], 1).cuda()
+        ovr             = ovr*line_iou_weight
+        union           = union*line_iou_weight
     invalid_masks = (invalid_mask < 0) | (invalid_mask >= img_w)
     ovr[invalid_masks] = 0.
     union[invalid_masks] = 0.
