@@ -4,14 +4,14 @@ import cv2
 import os
 import argparse
 
-TRAIN_SET = ['label_data_0313.json', 'label_data_0601.json']
-VAL_SET = ['label_data_0531.json']
-TRAIN_VAL_SET = TRAIN_SET + VAL_SET
-TEST_SET = ['test_label.json']
+TRAIN_SET = ['gaosu_tusimpleStyle_label_535.json']
+VAL_SET = ['gaosu_tusimpleStyle_label_535_val.json']
+TRAIN_VAL_SET = TRAIN_SET
+TEST_SET = ['gaosu_tusimpleStyle_label_535_test.json']
 
 
 def gen_label_for_json(args, image_set):
-    H, W = 720, 1280
+    H, W = 1080, 1920
     SEG_WIDTH = 30
     save_dir = args.savedir
 
@@ -73,15 +73,12 @@ def gen_label_for_json(args, image_set):
 
             seg_path = img_path.split("/")
             seg_path, img_name = os.path.join(args.root, args.savedir,
-                                              seg_path[1],
-                                              seg_path[2]), seg_path[3]
+                                              seg_path[0]), seg_path[1]
             os.makedirs(seg_path, exist_ok=True)
-            seg_path = os.path.join(seg_path, img_name[:-3] + "png")
+            seg_path = os.path.join(seg_path, img_name[:-4] + "png")
             cv2.imwrite(seg_path, seg_img)
 
-            seg_path = "/".join([
-                args.savedir, *img_path.split("/")[1:3], img_name[:-3] + "png"
-            ])
+            seg_path = "/".join([args.savedir, img_path.split("/")[0], img_name[:-4] + "png"])
             if seg_path[0] != '/':
                 seg_path = '/' + seg_path
             if img_path[0] != '/':
@@ -115,7 +112,8 @@ def generate_label(args):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--root',
-                        required=True,
+                        type=str,
+                        default='data/tusimple',
                         help='The root of the Tusimple dataset')
     parser.add_argument('--savedir',
                         type=str,

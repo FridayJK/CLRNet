@@ -10,12 +10,19 @@ from .registry import DATASETS
 import logging
 import random
 
+# SPLIT_FILES = {
+#     'trainval':
+#     ['label_data_0313.json', 'label_data_0601.json', 'label_data_0531.json'],
+#     'train': ['label_data_0313.json', 'label_data_0601.json'],
+#     'val': ['label_data_0531.json'],
+#     'test': ['test_label.json'],
+# }
 SPLIT_FILES = {
     'trainval':
-    ['label_data_0313.json', 'label_data_0601.json', 'label_data_0531.json'],
-    'train': ['label_data_0313.json', 'label_data_0601.json'],
-    'val': ['label_data_0531.json'],
-    'test': ['test_label.json'],
+    ['gaosu_tusimpleStyle_label_535.json'],
+    'train': ['gaosu_tusimpleStyle_label_535.json'],
+    'val': ['gaosu_tusimpleStyle_label_535_val.json'],
+    'test': ['gaosu_tusimpleStyle_label_535_test.json'],
 }
 
 
@@ -25,7 +32,7 @@ class TuSimple(BaseDataset):
         super().__init__(data_root, split, processes, cfg)
         self.anno_files = SPLIT_FILES[split]
         self.load_annotations()
-        self.h_samples = list(range(160, 720, 10))
+        self.h_samples = list(range(100, 1080, 10))
 
     def load_annotations(self):
         self.logger.info('Loading TuSimple annotations...')
@@ -39,8 +46,7 @@ class TuSimple(BaseDataset):
                 data = json.loads(line)
                 y_samples = data['h_samples']
                 gt_lanes = data['lanes']
-                mask_path = data['raw_file'].replace('clips',
-                                                     'seg_label')[:-3] + 'png'
+                mask_path = osp.join('seg_label',data['raw_file'][:-4] + 'png')
                 lanes = [[(x, y) for (x, y) in zip(lane, y_samples) if x >= 0]
                          for lane in gt_lanes]
                 lanes = [lane for lane in lanes if len(lane) > 0]

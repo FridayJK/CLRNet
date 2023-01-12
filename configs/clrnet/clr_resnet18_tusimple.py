@@ -9,8 +9,8 @@ backbone = dict(
 )
 
 num_points = 72
-max_lanes = 5
-sample_y = range(710, 150, -10)
+max_lanes = 10
+sample_y = range(1070, 90, -10)
 
 heads = dict(type='CLRHead',
              num_priors=192,
@@ -37,18 +37,19 @@ epochs = 70
 batch_size = 40
 
 optimizer = dict(type='AdamW', lr=1.0e-3)  # 3e-4 for batchsize 8
-total_iter = (3616 // batch_size + 1) * epochs
+# total_iter = (3616 // batch_size + 1) * epochs
+total_iter = (500 // batch_size + 1) * epochs
 scheduler = dict(type='CosineAnnealingLR', T_max=total_iter)
 
 eval_ep = 3
-save_ep = epochs
+save_ep = 5
 
 img_norm = dict(mean=[103.939, 116.779, 123.68], std=[1., 1., 1.])
-ori_img_w = 1280
-ori_img_h = 720
-img_h = 320
-img_w = 800
-cut_height = 160 
+ori_img_w = 1920
+ori_img_h = 1080
+img_h = 600
+img_w = 1200
+cut_height = 100
 
 train_process = [
     dict(
@@ -98,7 +99,7 @@ val_process = [
 
 dataset_path = './data/tusimple'
 dataset_type = 'TuSimple'
-test_json_file = 'data/tusimple/test_label.json'
+test_json_file = 'data/tusimple/gaosu_tusimpleStyle_label_535_test.json'
 dataset = dict(train=dict(
     type=dataset_type,
     data_root=dataset_path,
